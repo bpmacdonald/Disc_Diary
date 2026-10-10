@@ -1,0 +1,34 @@
+{% for group in groups %}
+  <section class="month-group" aria-labelledby="month-{{ group.year }}-{{ group.month }}">
+    <h2 id="month-{{ group.year }}-{{ group.month }}">{{ group.label }}</h2>
+    <ul class="diary-list">
+      {% for entry in group.entries %}
+        <li class="diary-row">
+          <a class="diary-cover" href="/albums/{{ entry.album_mbid }}">
+            <img src="{{ entry.cover_url }}" alt=""
+                 width="64" height="64" loading="lazy"
+                 onerror="this.onerror=null;this.src='{{ placeholder_cover }}';">
+          </a>
+          <div class="diary-body">
+            <a class="diary-title" href="/albums/{{ entry.album_mbid }}">{{ entry.album_title }}</a>
+            <p class="meta">{{ entry.artists }}</p>
+            <p class="meta">
+              {{ entry.listened_on.isoformat() }}
+              {% if entry.is_relisten %} · listened again{% endif %}
+            </p>
+          </div>
+          <div class="diary-rating">
+            {% if entry.stars %}
+              <span class="stars" aria-label="Rated {{ entry.rating }} out of 10">{{ entry.stars }}</span>
+            {% else %}
+              <span class="meta">No rating</span>
+            {% endif %}
+            {% if show_edit %}
+              <a class="diary-edit" href="/logs/{{ entry.log_id }}/edit">Edit</a>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endfor %}

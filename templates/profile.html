@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.user.username }} - Disc Diary{% endblock %}
+{% block content %}
+<header class="profile-header">
+  <h1>{{ profile.user.username }}</h1>
+  {% if is_own_profile %}
+    <p class="meta">This is your public profile. <a href="/diary">Open your diary</a></p>
+  {% endif %}
+  <ul class="profile-stats" aria-label="Profile stats">
+    <li><strong>{{ profile.stats.log_count }}</strong> listens</li>
+    <li><strong>{{ profile.stats.album_count }}</strong> albums</li>
+    <li><strong>{{ profile.stats.rated_count }}</strong> rated</li>
+  </ul>
+</header>
+
+<section aria-labelledby="recent-heading">
+  <h2 id="recent-heading">Recent listens</h2>
+  {% if profile.recent %}
+    <ul class="diary-list">
+      {% for entry in profile.recent %}
+        <li class="diary-row">
+          <a class="diary-cover" href="/albums/{{ entry.album_mbid }}">
+            <img src="{{ entry.cover_url }}" alt=""
+                 width="64" height="64" loading="lazy"
+                 onerror="this.onerror=null;this.src='{{ placeholder_cover }}';">
+          </a>
+          <div class="diary-body">
+            <a class="diary-title" href="/albums/{{ entry.album_mbid }}">{{ entry.album_title }}</a>
+            <p class="meta">{{ entry.artists }}</p>
+            <p class="meta">
+              {{ entry.listened_on.isoformat() }}
+              {% if entry.is_relisten %} · listened again{% endif %}
+            </p>
+          </div>
+          <div class="diary-rating">
+            {% if entry.stars %}
+              <span class="stars" aria-label="Rated {{ entry.rating }} out of 10">{{ entry.stars }}</span>
+            {% else %}
+              <span class="meta">No rating</span>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="placeholder-box">No listens yet.</div>
+  {% endif %}
+</section>
+{% endblock %}

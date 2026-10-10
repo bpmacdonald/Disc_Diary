@@ -304,6 +304,111 @@ label.checkbox input {
   margin-bottom: 0.5rem;
 }
 
+.month-group {
+  margin-top: 2rem;
+}
+
+.month-group h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--pico-muted-border-color, #ddd);
+  padding-bottom: 0.35rem;
+}
+
+.diary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.diary-row {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--pico-muted-border-color, #eee);
+}
+
+.diary-cover img {
+  width: 4rem;
+  height: 4rem;
+  object-fit: cover;
+  border-radius: 0.15rem;
+  background: #e8e4df;
+  display: block;
+}
+
+.diary-title {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.diary-body .meta {
+  margin: 0.15rem 0 0;
+}
+
+.diary-rating {
+  text-align: right;
+  display: grid;
+  gap: 0.35rem;
+  justify-items: end;
+}
+
+.diary-edit {
+  font-size: 0.9rem;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--pico-muted-border-color, #ddd);
+}
+
+.pagination .disabled {
+  color: var(--pico-muted-color, #999);
+}
+
+.profile-header {
+  margin-bottom: 2rem;
+}
+
+.profile-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.profile-stats li {
+  margin: 0;
+}
+
+.error-page {
+  max-width: 32rem;
+}
+
+@media (max-width: 640px) {
+  .diary-row {
+    grid-template-columns: 4rem 1fr;
+  }
+
+  .diary-rating {
+    grid-column: 2;
+    text-align: left;
+    justify-items: start;
+  }
+}
+
 .tracklist {
   width: 100%;
 }

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Your diary - Disc Diary{% endblock %}
+{% block content %}
+<h1>Your diary</h1>
+<p class="meta">
+  {% if pagination.total %}
+    {{ pagination.total }} listen{% if pagination.total != 1 %}s{% endif %}, newest first.
+  {% else %}
+    You haven’t logged any albums yet.
+  {% endif %}
+</p>
+
+{% if diary.groups %}
+  {% with groups=diary.groups, show_edit=true %}
+    {% include "partials/diary_entries.html" %}
+  {% endwith %}
+  {% include "partials/pagination.html" %}
+{% else %}
+  <div class="placeholder-box">
+    <a href="/search">Search for an album</a> to log your first listen.
+  </div>
+{% endif %}
+{% endblock %}
