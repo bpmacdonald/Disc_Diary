@@ -20,7 +20,9 @@ from app.musicbrainz.models import Artist, ReleaseGroup, ReleaseGroupSearchResul
 from app.musicbrainz.ratelimit import TokenBucket
 
 BASE_URL = "https://musicbrainz.org/ws/2"
+COVER_ART_BASE_URL = "https://coverartarchive.org"
 RETRY_STATUSES = frozenset({429, 503})
+REDIRECT_STATUSES = frozenset({301, 302, 303, 307, 308})
 TIMEOUT = httpx.Timeout(15.0, connect=5.0)
 
 M = TypeVar("M", bound=BaseModel)
@@ -128,6 +130,26 @@ class MusicBrainzClient:
     async def get_artist(self, mbid: str) -> Artist:
         data = await self._get(f"artist/{normalize_mbid(mbid)}", {})
         return self._parse(Artist, data)
+
+    async def get_front_cover_url(self, mbid: str) -> str | None:
+        """Return the Cover Art Archive front-image URL, or None if missing.
+
+        CAA answers with a redirect to the image; we do not follow it.
+        Failures (including 404) yield None so callers can use a placeholder.
+        """
+        url = f"{COVER_ART_BASE_URL}/release-group/{normalize_mbid(mbid)}/front"
+        await self._limiter.acquire()
+        try:
+            response = await self._http.get(url, follow_redirects=False)
+        except httpx.HTTPError:
+            return None
+        if response.status_code == 404:
+            return None
+        if response.status_code in REDIRECT_STATUSES:
+            return response.headers.get("Location")
+        if response.status_code == 200:
+            return str(response.url)
+        return None
 
     # ---- internals --------------------------------------------------
 

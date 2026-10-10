@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     database_url: str
     mb_user_agent: str
     secret_key: str
+    cache_staleness_days: int = 30
 
 
 settings = Settings()
