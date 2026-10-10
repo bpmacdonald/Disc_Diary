@@ -57,3 +57,57 @@ class Artist(_MBModel):
     sort_name: str | None = Field(default=None, alias="sort-name")
     type: str | None = None
     country: str | None = None
+
+
+class ReleaseSummary(_MBModel):
+    """A release listed under a release group (no tracklist yet)."""
+
+    id: str
+    title: str
+    status: str | None = None
+    country: str | None = None
+    date: str | None = None
+    track_count: int | None = Field(default=None, alias="track-count")
+
+    @field_validator("status", "country", "date", mode="after")
+    @classmethod
+    def _empty_to_none(cls, value: str | None) -> str | None:
+        return value or None
+
+
+class ReleaseBrowseResult(_MBModel):
+    # Browse responses use release-count / release-offset.
+    count: int = Field(default=0, alias="release-count")
+    offset: int = Field(default=0, alias="release-offset")
+    releases: list[ReleaseSummary] = Field(default_factory=list)
+
+
+class RecordingRef(_MBModel):
+    id: str | None = None
+    title: str | None = None
+    length: int | None = None  # milliseconds
+
+
+class Track(_MBModel):
+    id: str | None = None
+    position: int | None = None
+    number: str | None = None
+    title: str
+    length: int | None = None
+    recording: RecordingRef | None = None
+
+
+class Medium(_MBModel):
+    position: int = 1
+    format: str | None = None
+    track_count: int | None = Field(default=None, alias="track-count")
+    tracks: list[Track] = Field(default_factory=list)
+
+
+class ReleaseDetail(_MBModel):
+    id: str
+    title: str
+    status: str | None = None
+    country: str | None = None
+    date: str | None = None
+    media: list[Medium] = Field(default_factory=list)

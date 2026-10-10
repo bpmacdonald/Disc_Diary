@@ -16,7 +16,13 @@ from app.musicbrainz.errors import (
     MusicBrainzNotFound,
     MusicBrainzRetriesExhausted,
 )
-from app.musicbrainz.models import Artist, ReleaseGroup, ReleaseGroupSearchResult
+from app.musicbrainz.models import (
+    Artist,
+    ReleaseBrowseResult,
+    ReleaseDetail,
+    ReleaseGroup,
+    ReleaseGroupSearchResult,
+)
 from app.musicbrainz.ratelimit import TokenBucket
 
 BASE_URL = "https://musicbrainz.org/ws/2"
@@ -130,6 +136,32 @@ class MusicBrainzClient:
     async def get_artist(self, mbid: str) -> Artist:
         data = await self._get(f"artist/{normalize_mbid(mbid)}", {})
         return self._parse(Artist, data)
+
+    async def browse_releases_for_group(
+        self,
+        release_group_mbid: str,
+        *,
+        status: str | None = "official",
+        limit: int = 25,
+        offset: int = 0,
+    ) -> ReleaseBrowseResult:
+        """List releases that belong to a release group (browse API)."""
+        params: dict[str, Any] = {
+            "release-group": normalize_mbid(release_group_mbid),
+            "limit": limit,
+            "offset": offset,
+        }
+        if status:
+            params["status"] = status
+        data = await self._get("release", params)
+        return self._parse(ReleaseBrowseResult, data)
+
+    async def get_release(self, mbid: str) -> ReleaseDetail:
+        """Fetch a release including media/tracklists (`inc=recordings`)."""
+        data = await self._get(
+            f"release/{normalize_mbid(mbid)}", {"inc": "recordings"}
+        )
+        return self._parse(ReleaseDetail, data)
 
     async def get_front_cover_url(self, mbid: str) -> str | None:
         """Return the Cover Art Archive front-image URL, or None if missing.

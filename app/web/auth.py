@@ -33,13 +33,14 @@ def _redirect(path: str) -> RedirectResponse:
 def signup_page(request: Request, user: CurrentUser) -> Response:
     if user is not None:
         return _redirect("/account")
-    return render(request, "signup.html")
+    return render(request, "signup.html", {"current_user": user})
 
 
 @router.post("/signup", dependencies=[Depends(verify_csrf)])
 def signup_submit(
     request: Request,
     db: Db,
+    user: CurrentUser,
     username: Annotated[str, Form()] = "",
     email: Annotated[str, Form()] = "",
     password: Annotated[str, Form()] = "",
@@ -47,7 +48,12 @@ def signup_submit(
     result = auth_service.signup(db, username, email, password)
     if result.user is None:
         # Never echo the password back.
-        context = {"errors": result.errors, "username": username, "email": email}
+        context = {
+            "current_user": user,
+            "errors": result.errors,
+            "username": username,
+            "email": email,
+        }
         return render(request, "signup.html", context, status_code=400)
     start_session(request, result.user.id)
     return _redirect("/account")
@@ -57,13 +63,18 @@ def signup_submit(
 def login_page(request: Request, user: CurrentUser, next: str = "") -> Response:
     if user is not None:
         return _redirect(safe_next_path(next))
-    return render(request, "login.html", {"next": safe_next_path(next, "")})
+    return render(
+        request,
+        "login.html",
+        {"current_user": user, "next": safe_next_path(next, "")},
+    )
 
 
 @router.post("/login", dependencies=[Depends(verify_csrf)])
 def login_submit(
     request: Request,
     db: Db,
+    user: CurrentUser,
     throttle: Annotated[LoginThrottle, Depends(get_login_throttle)],
     username: Annotated[str, Form()] = "",
     password: Annotated[str, Form()] = "",
@@ -82,7 +93,12 @@ def login_submit(
         response = render(
             request,
             "login.html",
-            {"error": error, "username": username, "next": safe_next},
+            {
+                "current_user": user,
+                "error": error,
+                "username": username,
+                "next": safe_next,
+            },
             status_code=429,
         )
         response.headers["Retry-After"] = str(result.retry_after)
@@ -91,7 +107,12 @@ def login_submit(
         return render(
             request,
             "login.html",
-            {"error": auth_service.LOGIN_ERROR, "username": username, "next": safe_next},
+            {
+                "current_user": user,
+                "error": auth_service.LOGIN_ERROR,
+                "username": username,
+                "next": safe_next,
+            },
             status_code=401,
         )
     start_session(request, result.user.id)
@@ -106,4 +127,4 @@ def logout(request: Request) -> Response:
 
 @router.get("/account")
 def account(request: Request, user: Annotated[User, Depends(require_user)]) -> Response:
-    return render(request, "account.html", {"user": user})
+    return render(request, "account.html", {"current_user": user, "user": user})

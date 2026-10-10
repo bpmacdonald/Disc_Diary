@@ -1,0 +1,33 @@
+{% if error %}
+  <p class="alert" role="alert">{{ error }}</p>
+{% elif hint %}
+  <p class="results-meta">{{ hint }}</p>
+{% elif not results %}
+  <p class="results-meta">No albums matched “{{ q }}”.</p>
+{% else %}
+  <p class="results-meta">
+    Showing {{ results|length }}{% if count is defined and count > results|length %} of {{ count }}{% endif %}
+    result{% if results|length != 1 %}s{% endif %} for “{{ q }}”.
+  </p>
+  <ul class="result-grid">
+    {% for item in results %}
+      <li>
+        <a class="result-card" href="/albums/{{ item.mbid }}">
+          <img src="{{ item.cover_url }}" alt=""
+               width="120" height="120"
+               loading="lazy"
+               onerror="this.onerror=null;this.src='{{ placeholder_cover }}';">
+          <div>
+            <h2>{{ item.title }}</h2>
+            <p class="meta">{{ item.artists }}</p>
+            <p class="meta">
+              {% if item.year %}{{ item.year }}{% endif %}
+              {% if item.year and item.primary_type %} · {% endif %}
+              {% if item.primary_type %}{{ item.primary_type }}{% endif %}
+            </p>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

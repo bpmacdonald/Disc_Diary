@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Search - Disc Diary{% endblock %}
+{% block main_class %}search-page{% endblock %}
+{% block content %}
+<h1>Search albums</h1>
+<p class="meta">Find albums by title or artist. Results come from MusicBrainz.</p>
+
+<label class="search-box" for="page-q">
+  Album or artist
+  <input id="page-q" type="search" name="q" value="{{ q }}"
+         placeholder="e.g. OK Computer, Radiohead"
+         autocomplete="off"
+         hx-get="/search/results"
+         hx-trigger="input changed delay:300ms, search, load"
+         hx-target="#search-results"
+         hx-indicator="#search-spinner"
+         hx-include="this"
+         hx-push-url="true"
+         aria-controls="search-results">
+</label>
+
+<p id="search-spinner" class="htmx-indicator" aria-live="polite">Searching…</p>
+<div id="search-results" aria-live="polite">
+  {% if q %}
+    <p class="results-meta">Searching for “{{ q }}”…</p>
+  {% else %}
+    <p class="results-meta">Start typing to see albums.</p>
+  {% endif %}
+</div>
+{% endblock %}

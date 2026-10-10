@@ -15,6 +15,7 @@ from sqlalchemy import (
     func,
     text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -82,6 +83,29 @@ class ReleaseGroup(Base):
         back_populates="release_group", order_by="ReleaseGroupArtist.position"
     )
     logs: Mapped[list[Log]] = relationship(back_populates="release_group")
+    tracklist: Mapped[ReleaseGroupTracklist | None] = relationship(
+        back_populates="release_group", uselist=False
+    )
+
+
+class ReleaseGroupTracklist(Base):
+    """Cached tracklist for one representative release of a release group.
+
+    `tracks` is a JSON list of
+    ``{disc, position, number, title, length_ms, recording_mbid}``.
+    """
+
+    __tablename__ = "release_group_tracklists"
+
+    release_group_id: Mapped[int] = mapped_column(
+        ForeignKey("release_groups.id", ondelete="CASCADE"), primary_key=True
+    )
+    release_mbid: Mapped[str] = mapped_column(String(36))
+    release_title: Mapped[str | None] = mapped_column(String(500))
+    tracks: Mapped[list] = mapped_column(JSONB, nullable=False)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    release_group: Mapped[ReleaseGroup] = relationship(back_populates="tracklist")
 
 
 class ReleaseGroupArtist(Base):

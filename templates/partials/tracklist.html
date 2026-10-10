@@ -1,0 +1,38 @@
+<div id="tracklist-panel">
+  {% if error %}
+    <p class="alert" role="alert">{{ error }}</p>
+  {% else %}
+    {% if tracklist.release_title %}
+      <p class="meta">From release: {{ tracklist.release_title }}</p>
+    {% endif %}
+    {% if not tracks %}
+      <p class="meta">This release has no tracks listed.</p>
+    {% else %}
+      {% set ns = namespace(current_disc=None) %}
+      <table class="tracklist" role="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col" class="duration">Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for track in tracks %}
+            {% if multi_disc and track.disc != ns.current_disc %}
+              {% set ns.current_disc = track.disc %}
+              <tr>
+                <td colspan="3" class="disc-label">Disc {{ track.disc }}</td>
+              </tr>
+            {% endif %}
+            <tr>
+              <td>{{ track.number }}</td>
+              <td>{{ track.title }}</td>
+              <td class="duration">{{ track.duration }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+</div>

@@ -10,6 +10,7 @@ from app.config import Settings, settings
 from app.deps import LoginRequired
 from app.musicbrainz.errors import MusicBrainzError, MusicBrainzNotFound
 from app.web.auth import router as auth_router
+from app.web.pages import router as pages_router
 from app.web.templating import BASE_DIR
 
 SESSION_COOKIE_NAME = "dd_session"
@@ -59,6 +60,7 @@ def create_app(cfg: Settings | None = None) -> FastAPI:
     )
     application.include_router(api_router)
     application.include_router(auth_router)
+    application.include_router(pages_router)
     application.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
     application.add_exception_handler(MusicBrainzNotFound, _musicbrainz_not_found)

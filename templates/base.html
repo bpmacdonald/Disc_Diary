@@ -4,16 +4,40 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Disc Diary{% endblock %}</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 26rem; margin: 3rem auto; padding: 0 1rem; }
-    label { display: block; margin-top: 1rem; font-weight: 600; }
-    input { width: 100%; padding: .5rem; box-sizing: border-box; }
-    button { margin-top: 1.25rem; padding: .5rem 1rem; }
-    .error { color: #b00020; margin: .25rem 0 0; }
-    .alert { color: #b00020; border: 1px solid #b00020; padding: .5rem; margin-top: 1rem; }
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
 </head>
 <body>
-  {% block content %}{% endblock %}
+  <header class="site-header container">
+    <nav aria-label="Primary">
+      <a class="brand" href="/search">Disc Diary</a>
+
+      <form class="nav-search" action="/search" method="get" role="search">
+        <input id="nav-q" type="search" name="q" placeholder="Search albums…"
+               value="{{ q|default('') }}" autocomplete="off"
+               aria-label="Search albums">
+      </form>
+
+      <ul class="nav-actions">
+        {% if current_user %}
+          <li><a class="nav-username" href="/account">{{ current_user.username }}</a></li>
+          <li>
+            <form method="post" action="/logout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="outline secondary">Log out</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="/login">Log in</a></li>
+          <li><a href="/signup" role="button">Sign up</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container {% block main_class %}{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
 </body>
 </html>

@@ -1,0 +1,212 @@
+/* Disc Diary — small overrides on top of Pico CSS */
+
+:root {
+  --dd-cover: 7.5rem;
+  --dd-cover-lg: 14rem;
+}
+
+body > main {
+  padding-block: 1.5rem;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--pico-muted-border-color, #ddd);
+  margin-bottom: 0;
+}
+
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding-block: 0.75rem;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-search {
+  flex: 1 1 12rem;
+  margin: 0;
+}
+
+.nav-search input {
+  margin: 0;
+}
+
+.nav-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+  list-style: none;
+  padding: 0;
+}
+
+.nav-actions form {
+  margin: 0;
+}
+
+.nav-actions button {
+  margin: 0;
+  width: auto;
+}
+
+.nav-username {
+  font-weight: 600;
+}
+
+.search-page .search-box {
+  margin-bottom: 1.25rem;
+}
+
+.results-meta {
+  color: var(--pico-muted-color, #666);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.result-card {
+  display: grid;
+  grid-template-columns: var(--dd-cover) 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.75rem;
+  border: 1px solid var(--pico-muted-border-color, #ddd);
+  border-radius: var(--pico-border-radius, 0.25rem);
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.result-card:hover {
+  border-color: var(--pico-primary, #0172ad);
+}
+
+.result-card img,
+.album-cover img {
+  width: var(--dd-cover);
+  height: var(--dd-cover);
+  object-fit: cover;
+  border-radius: 0.15rem;
+  background: #e8e4df;
+}
+
+.result-card h2,
+.album-hero h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+  line-height: 1.25;
+}
+
+.result-card .meta,
+.album-hero .meta {
+  color: var(--pico-muted-color, #666);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.htmx-indicator {
+  display: none;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  display: inline;
+}
+
+.album-hero {
+  display: grid;
+  grid-template-columns: var(--dd-cover-lg) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  margin-bottom: 2rem;
+}
+
+.album-cover img {
+  width: var(--dd-cover-lg);
+  height: var(--dd-cover-lg);
+}
+
+.album-section {
+  margin-top: 2rem;
+}
+
+.album-section h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.placeholder-box {
+  border: 1px dashed var(--pico-muted-border-color, #ccc);
+  border-radius: var(--pico-border-radius, 0.25rem);
+  padding: 1rem;
+  color: var(--pico-muted-color, #666);
+}
+
+.tracklist {
+  width: 100%;
+}
+
+.tracklist td:first-child,
+.tracklist th:first-child {
+  width: 3rem;
+  text-align: right;
+  color: var(--pico-muted-color, #666);
+}
+
+.tracklist .duration {
+  width: 4rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--pico-muted-color, #666);
+}
+
+.disc-label {
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.auth-shell {
+  max-width: 26rem;
+  margin-inline: auto;
+}
+
+.error {
+  color: #b00020;
+  margin: 0.25rem 0 0;
+}
+
+.alert {
+  color: #b00020;
+  border: 1px solid #b00020;
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .album-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .album-cover img {
+    width: 100%;
+    max-width: 14rem;
+    height: auto;
+    aspect-ratio: 1;
+  }
+}

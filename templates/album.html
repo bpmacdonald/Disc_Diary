@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ album.title }} - Disc Diary{% endblock %}
+{% block content %}
+<article class="album-hero">
+  <div class="album-cover">
+    <img src="{{ cover_url }}" alt="Cover of {{ album.title }}"
+         width="224" height="224"
+         onerror="this.onerror=null;this.src='{{ placeholder_cover }}';">
+  </div>
+  <div>
+    <h1>{{ album.title }}</h1>
+    <p class="meta">{{ artists_label }}</p>
+    <p class="meta">
+      {% if album.first_release_date %}Released {{ album.first_release_date }}{% endif %}
+      {% if album.first_release_date and album.primary_type %} · {% endif %}
+      {% if album.primary_type %}{{ album.primary_type }}{% endif %}
+    </p>
+  </div>
+</article>
+
+<section class="album-section" aria-labelledby="rating-heading">
+  <h2 id="rating-heading">Average rating</h2>
+  <div class="placeholder-box">
+    {% if average_rating is not none %}
+      {{ average_rating }}
+    {% else %}
+      No ratings yet — logging arrives soon.
+    {% endif %}
+  </div>
+</section>
+
+<section class="album-section" aria-labelledby="logs-heading">
+  <h2 id="logs-heading">Recent logs</h2>
+  <div class="placeholder-box">
+    {% if recent_logs %}
+      {# Reserved for the diary feature. #}
+    {% else %}
+      No recent listens yet.
+    {% endif %}
+  </div>
+</section>
+
+<section class="album-section" aria-labelledby="tracks-heading">
+  <h2 id="tracks-heading">Tracklist</h2>
+  <div id="tracklist-panel">
+    <button type="button"
+            class="outline"
+            hx-get="/albums/{{ album.mbid }}/tracks"
+            hx-target="#tracklist-panel"
+            hx-swap="outerHTML"
+            hx-indicator="#tracklist-spinner">
+      Show tracklist
+    </button>
+    <span id="tracklist-spinner" class="htmx-indicator" aria-live="polite"> Loading…</span>
+  </div>
+</section>
+{% endblock %}
