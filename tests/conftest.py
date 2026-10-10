@@ -12,6 +12,12 @@ from sqlalchemy.orm import Session
 load_dotenv()
 
 
+@pytest.fixture(scope="module")
+def anyio_backend() -> str:
+    """Run @pytest.mark.anyio tests on asyncio only (trio isn't installed)."""
+    return "asyncio"
+
+
 def _test_database_url() -> str:
     url = os.environ.get("TEST_DATABASE_URL")
     if not url:
