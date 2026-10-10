@@ -9,3 +9,7 @@ jinja2
 httpx
 pytest
 respx
+argon2-cffi
+itsdangerous
+python-multipart
+email-validator

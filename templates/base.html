@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Disc Diary{% endblock %}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 26rem; margin: 3rem auto; padding: 0 1rem; }
+    label { display: block; margin-top: 1rem; font-weight: 600; }
+    input { width: 100%; padding: .5rem; box-sizing: border-box; }
+    button { margin-top: 1.25rem; padding: .5rem 1rem; }
+    .error { color: #b00020; margin: .25rem 0 0; }
+    .alert { color: #b00020; border: 1px solid #b00020; padding: .5rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  {% block content %}{% endblock %}
+</body>
+</html>
