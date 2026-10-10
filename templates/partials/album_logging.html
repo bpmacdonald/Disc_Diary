@@ -1,0 +1,28 @@
+<section id="album-logging" class="album-section" aria-labelledby="logging-heading">
+  <h2 id="logging-heading">Your listens</h2>
+
+  {% if flash %}<p class="flash" role="status">{{ flash }}</p>{% endif %}
+
+  <div class="avg-rating" aria-labelledby="rating-heading">
+    <h3 id="rating-heading">Average rating</h3>
+    {% if average_rating is not none %}
+      <p class="log-stars" aria-label="Average {{ '%.1f'|format(average_rating / 2) }} out of 5">
+        {{ average_stars }}
+        <span class="meta">({{ '%.1f'|format(average_rating / 2) }} / 5)</span>
+      </p>
+    {% else %}
+      <div class="placeholder-box">No ratings yet.</div>
+    {% endif %}
+  </div>
+
+  {% if current_user %}
+    {% include "partials/log_form.html" %}
+  {% else %}
+    <p class="placeholder-box">
+      <a href="/login?next=/albums/{{ release_group_mbid }}">Log in</a> to log this album.
+    </p>
+  {% endif %}
+
+  <h3>Recent logs</h3>
+  {% include "partials/log_list.html" %}
+</section>

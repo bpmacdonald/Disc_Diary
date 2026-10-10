@@ -18,27 +18,7 @@
   </div>
 </article>
 
-<section class="album-section" aria-labelledby="rating-heading">
-  <h2 id="rating-heading">Average rating</h2>
-  <div class="placeholder-box">
-    {% if average_rating is not none %}
-      {{ average_rating }}
-    {% else %}
-      No ratings yet — logging arrives soon.
-    {% endif %}
-  </div>
-</section>
-
-<section class="album-section" aria-labelledby="logs-heading">
-  <h2 id="logs-heading">Recent logs</h2>
-  <div class="placeholder-box">
-    {% if recent_logs %}
-      {# Reserved for the diary feature. #}
-    {% else %}
-      No recent listens yet.
-    {% endif %}
-  </div>
-</section>
+{% include "partials/album_logging.html" %}
 
 <section class="album-section" aria-labelledby="tracks-heading">
   <h2 id="tracks-heading">Tracklist</h2>

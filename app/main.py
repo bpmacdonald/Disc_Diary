@@ -1,7 +1,7 @@
 from urllib.parse import quote
 
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -10,6 +10,7 @@ from app.config import Settings, settings
 from app.deps import LoginRequired
 from app.musicbrainz.errors import MusicBrainzError, MusicBrainzNotFound
 from app.web.auth import router as auth_router
+from app.web.logs import router as logs_router
 from app.web.pages import router as pages_router
 from app.web.templating import BASE_DIR
 
@@ -40,9 +41,15 @@ async def _musicbrainz_unavailable(
     )
 
 
-async def _login_required(_request: Request, exc: Exception) -> RedirectResponse:
+async def _login_required(request: Request, exc: Exception) -> Response:
     assert isinstance(exc, LoginRequired)
-    return RedirectResponse(f"/login?next={quote(exc.next_path, safe='/')}", status_code=303)
+    login_url = f"/login?next={quote(exc.next_path, safe='/')}"
+    # HTMX ignores normal redirects for non-GET; HX-Redirect sends the browser.
+    if request.headers.get("hx-request") == "true":
+        response = Response(status_code=200)
+        response.headers["HX-Redirect"] = login_url
+        return response
+    return RedirectResponse(login_url, status_code=303)
 
 
 def create_app(cfg: Settings | None = None) -> FastAPI:
@@ -61,6 +68,7 @@ def create_app(cfg: Settings | None = None) -> FastAPI:
     application.include_router(api_router)
     application.include_router(auth_router)
     application.include_router(pages_router)
+    application.include_router(logs_router)
     application.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
     application.add_exception_handler(MusicBrainzNotFound, _musicbrainz_not_found)

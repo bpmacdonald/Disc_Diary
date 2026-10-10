@@ -158,6 +158,152 @@ body > main {
   color: var(--pico-muted-color, #666);
 }
 
+.flash {
+  background: #e7f6ec;
+  border: 1px solid #b7e0c2;
+  color: #0b5;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--pico-border-radius, 0.25rem);
+}
+
+.log-form fieldset {
+  margin: 0 0 1.5rem;
+  padding: 1rem;
+}
+
+.rating-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.rating-option,
+.rating-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.25rem 0.45rem;
+  border: 1px solid var(--pico-muted-border-color, #ddd);
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.rating-option:has(input:checked),
+.rating-clear:has(input:checked) {
+  border-color: var(--pico-primary, #0172ad);
+  background: color-mix(in srgb, var(--pico-primary, #0172ad) 12%, transparent);
+}
+
+.rating-option input,
+.rating-clear input {
+  margin: 0;
+  width: auto;
+}
+
+.stars,
+.log-stars {
+  letter-spacing: 0.05em;
+  color: #c45c26;
+  font-size: 1.15rem;
+  margin: 0.15rem 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+label.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+}
+
+label.checkbox input {
+  width: auto;
+  margin: 0;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.form-actions button,
+.form-actions a {
+  margin: 0;
+  width: auto;
+}
+
+.log-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.log-item {
+  border: 1px solid var(--pico-muted-border-color, #ddd);
+  border-radius: var(--pico-border-radius, 0.25rem);
+  padding: 0.85rem 1rem;
+}
+
+.log-item-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+
+.log-review {
+  white-space: pre-wrap;
+  margin: 0.35rem 0 0;
+}
+
+.log-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.log-actions form {
+  margin: 0;
+}
+
+.log-actions button {
+  margin: 0;
+  width: auto;
+  padding: 0.25rem 0.6rem;
+}
+
+.avg-rating {
+  margin-bottom: 1.25rem;
+}
+
+.avg-rating h3,
+#album-logging h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
 .tracklist {
   width: 100%;
 }

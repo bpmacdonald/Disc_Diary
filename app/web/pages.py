@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request
@@ -10,11 +11,19 @@ from app.musicbrainz.client import MusicBrainzClient
 from app.musicbrainz.errors import MusicBrainzError, MusicBrainzNotFound
 from app.services import albums as albums_service
 from app.services import search as search_service
+from app.services.catalog import get_or_fetch_release_group
 from app.services.display import (
     PLACEHOLDER_COVER_PATH,
     artists_label,
     search_cover_url,
     year_from_date,
+)
+from app.services.logs import (
+    LogNotFound,
+    album_logging_context,
+    empty_form_values,
+    get_owned_log,
+    values_from_log,
 )
 from app.services.tracklist import format_duration, get_or_fetch_tracklist
 from app.web.templating import render
@@ -110,10 +119,12 @@ async def album_page(
     user: CurrentUser,
     session: Db,
     mb_client: Mb,
+    edit: int | None = None,
 ) -> Response:
     try:
-        album = await albums_service.get_album(session, mbid, mb_client)
-    except MusicBrainzNotFound:
+        release_group = await get_or_fetch_release_group(session, mbid, mb_client)
+        album = albums_service.album_to_out(release_group)
+    except (MusicBrainzNotFound, ValueError):
         return render(
             request,
             "error.html",
@@ -136,6 +147,25 @@ async def album_page(
             status_code=503,
         )
 
+    editing_log = None
+    form_values = empty_form_values(date.today())
+    form_errors: dict[str, str] = {}
+    if edit is not None and user is not None:
+        try:
+            editing_log = get_owned_log(session, edit, user.id)
+            form_values = values_from_log(editing_log)
+        except LogNotFound:
+            editing_log = None
+
+    logging_ctx = album_logging_context(
+        session,
+        release_group,
+        user,
+        today=date.today(),
+        form_values=form_values,
+        form_errors=form_errors,
+        editing_log=editing_log,
+    )
     return render(
         request,
         "album.html",
@@ -146,9 +176,7 @@ async def album_page(
             "cover_url": album.cover_url,
             "year": year_from_date(album.first_release_date),
             "placeholder_cover": PLACEHOLDER_COVER_PATH,
-            # Logging UI lands in a later feature.
-            "average_rating": None,
-            "recent_logs": [],
+            **logging_ctx,
         },
     )
 

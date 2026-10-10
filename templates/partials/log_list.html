@@ -1,0 +1,40 @@
+{% if recent_logs %}
+  <ul class="log-list">
+    {% for log in recent_logs %}
+      <li class="log-item" id="log-{{ log.id }}">
+        <div class="log-item-header">
+          <strong>{{ log.username }}</strong>
+          <span class="meta">
+            {{ log.listened_on.isoformat() }}
+            {% if log.is_relisten %} · listened again{% endif %}
+          </span>
+        </div>
+        {% if log.stars %}
+          <p class="log-stars" aria-label="Rated {{ log.rating }} out of 10">{{ log.stars }}</p>
+        {% endif %}
+        {% if log.review_text %}
+          <p class="log-review">{{ log.review_text }}</p>
+        {% endif %}
+        {% if log.is_owner %}
+          <div class="log-actions">
+            <a href="/logs/{{ log.id }}/edit"
+               hx-get="/logs/{{ log.id }}/edit"
+               hx-target="#album-logging"
+               hx-swap="outerHTML">Edit</a>
+            <form method="post"
+                  action="/logs/{{ log.id }}/delete"
+                  hx-post="/logs/{{ log.id }}/delete"
+                  hx-target="#album-logging"
+                  hx-swap="outerHTML"
+                  hx-confirm="Delete this listen?">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <button type="submit" class="outline secondary">Delete</button>
+            </form>
+          </div>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <div class="placeholder-box">No recent listens yet.</div>
+{% endif %}

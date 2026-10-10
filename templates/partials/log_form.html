@@ -1,0 +1,54 @@
+{% set form_action = "/logs/" ~ editing_log_id if editing_log_id else "/albums/" ~ release_group_mbid ~ "/logs" %}
+<form class="log-form"
+      method="post"
+      action="{{ form_action }}"
+      hx-post="{{ form_action }}"
+      hx-target="#album-logging"
+      hx-swap="outerHTML">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+  <fieldset>
+    <legend>{% if editing_log_id %}Edit your listen{% else %}Log this album{% endif %}</legend>
+
+    <label for="rating">Rating</label>
+    <div class="rating-picker" role="radiogroup" aria-label="Rating in half stars">
+      <label class="rating-clear">
+        <input type="radio" name="rating" value=""
+               {% if not form_values.rating %}checked{% endif %}>
+        <span>No rating</span>
+      </label>
+      {% for value, stars, label in rating_choices %}
+        <label class="rating-option" title="{{ label }} stars">
+          <input type="radio" name="rating" value="{{ value }}"
+                 {% if form_values.rating == value|string %}checked{% endif %}>
+          <span class="stars" aria-hidden="true">{{ stars }}</span>
+          <span class="visually-hidden">{{ label }} stars</span>
+        </label>
+      {% endfor %}
+    </div>
+    {% if form_errors.rating %}<p class="error">{{ form_errors.rating }}</p>{% endif %}
+
+    <label for="review_text">Review <span class="meta">(optional)</span></label>
+    <textarea id="review_text" name="review_text" rows="4" maxlength="5000"
+              placeholder="What stood out?">{{ form_values.review_text }}</textarea>
+    {% if form_errors.review_text %}<p class="error">{{ form_errors.review_text }}</p>{% endif %}
+
+    <label for="listened_on">Listened on</label>
+    <input id="listened_on" type="date" name="listened_on"
+           value="{{ form_values.listened_on }}" required>
+    {% if form_errors.listened_on %}<p class="error">{{ form_errors.listened_on }}</p>{% endif %}
+
+    <label class="checkbox">
+      <input type="checkbox" name="is_relisten" value="on"
+             {% if form_values.is_relisten %}checked{% endif %}>
+      Listened again
+    </label>
+
+    <div class="form-actions">
+      <button type="submit">{% if editing_log_id %}Save changes{% else %}Save listen{% endif %}</button>
+      {% if editing_log_id %}
+        <a class="secondary" href="/albums/{{ release_group_mbid }}">Cancel</a>
+      {% endif %}
+    </div>
+  </fieldset>
+</form>
